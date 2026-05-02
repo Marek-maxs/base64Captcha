@@ -202,7 +202,6 @@ func (item *ItemChar) drawNoise(noiseText string, fonts []*truetype.Font) error 
 }
 
 //drawText draw captcha string to image.把文字写入图像验证码
-
 func (item *ItemChar) drawText(text string, fonts []*truetype.Font) error {
 	c := freetype.NewContext()
 	c.SetDPI(imageStringDpi)
@@ -217,12 +216,19 @@ func (item *ItemChar) drawText(text string, fonts []*truetype.Font) error {
 	fontWidth := item.width / len(text)
 
 	for i, s := range text {
-		fontSize := item.height * (rand.Intn(7) + 7) / 16
+		// 固定字体大小为高度的 80%
+		fontSize := float64(item.height) * 0.8
+
 		c.SetSrc(image.NewUniform(RandDeepColor()))
-		c.SetFontSize(float64(fontSize))
+		c.SetFontSize(fontSize)
 		c.SetFont(randFontFrom(fonts))
-		x := fontWidth*i + fontWidth/fontSize
-		y := item.height/2 + fontSize/2 - rand.Intn(item.height/16*3)
+
+		// 固定 X：均匀分布，居中
+		x := fontWidth*i + (fontWidth-int(fontSize))/2
+
+		// 固定 Y：垂直居中（freetype 基线调整）
+		y := item.height/2 + int(fontSize)/3
+
 		pt := freetype.Pt(x, y)
 		if _, err := c.DrawString(string(s), pt); err != nil {
 			return err
