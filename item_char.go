@@ -201,7 +201,7 @@ func (item *ItemChar) drawNoise(noiseText string, fonts []*truetype.Font) error 
 	return nil
 }
 
-//drawText draw captcha string to image.把文字写入图像验证码
+// drawText draw captcha string to image.把文字写入图像验证码
 func (item *ItemChar) drawText(text string, fonts []*truetype.Font) error {
 	c := freetype.NewContext()
 	c.SetDPI(imageStringDpi)
